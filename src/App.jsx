@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Services from './components/Services';
-import About from './components/About';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import Demo from './components/Demo';
-import GetStarted from './components/GetStarted';
-import ServiceDetail from './components/ServiceDetail';
-import Blog from './components/Blog';
-import BlogPost from './components/BlogPost';
-import Courses from './components/Courses';
+import Header from './components/Header.jsx';
+import Hero from './components/Hero.jsx';
+import Services from './components/Services.jsx';
+import About from './components/About.jsx';
+import Contact from './components/Contact.jsx';
+import Footer from './components/Footer.jsx';
+import Demo from './components/Demo.jsx';
+import GetStarted from './components/GetStarted.jsx';
+import ServiceDetail from './components/ServiceDetail.jsx';
+import Blog from './components/Blog.jsx';
+import BlogPost from './components/BlogPost.jsx';
+import Courses from './components/Courses.jsx';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
