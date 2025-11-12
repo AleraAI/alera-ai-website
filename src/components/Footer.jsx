@@ -59,7 +59,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3 text-gray-300">
                 <Mail className="h-4 w-4 text-blue-400" />
-                <span>hello@aleraai.com</span>
+                <span>hello@alera.ai</span>
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
                 <Phone className="h-4 w-4 text-blue-400" />
@@ -67,7 +67,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3 text-gray-300">
                 <MapPin className="h-4 w-4 text-blue-400" />
-                <span>San Francisco, CA</span>
+                <span>Vancouver, BC</span>
               </div>
             </div>
           </div>
