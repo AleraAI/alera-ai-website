@@ -29,7 +29,7 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email Us",
-      content: "hello@aleraai.com",
+      content: "hello@alera.ai",
       description: "Send us an email anytime"
     },
     {
@@ -41,7 +41,7 @@ const Contact = () => {
     {
       icon: MapPin,
       title: "Visit Us",
-      content: "San Francisco, CA",
+      content: "Vancouver, BC",
       description: "Come say hello at our office"
     }
   ];
