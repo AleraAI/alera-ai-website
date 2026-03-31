@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Play, Calendar, CheckCircle, Brain, Code, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { submitToFormspree } from '../services/formService';
 
 const Demo = ({ onBack }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
   const [selectedDemo, setSelectedDemo] = useState('');
   const [formData, setFormData] = useState({
     name: '',
@@ -21,12 +24,29 @@ const Demo = ({ onBack }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle demo request submission
-    console.log('Demo request submitted:', { ...formData, selectedDemo });
-    alert('Thank you! We will contact you within 24 hours to schedule your personalized demo.');
+    if (!selectedDemo) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    const result = await submitToFormspree({
+      ...formData,
+      selectedDemo,
+      formType: 'Demo Request'
+    });
+
+    setIsSubmitting(false);
+    if (result.success) {
+      setSubmitStatus({ type: 'success', message: 'Thank you! We will contact you within 24 hours to schedule your demo.' });
+      setFormData({ name: '', email: '', company: '', role: '', useCase: '', preferredTime: '' });
+      setSelectedDemo('');
+    } else {
+      setSubmitStatus({ type: 'error', message: result.message });
+    }
   };
+
 
   const demoOptions = [
     {
@@ -60,8 +80,8 @@ const Demo = ({ onBack }) => {
       <div className="container mx-auto max-w-4xl">
         {/* Header */}
         <div className="flex items-center mb-8">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={onBack}
             className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 mr-4"
           >
@@ -80,7 +100,7 @@ const Demo = ({ onBack }) => {
             Request a Personalized Demo
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            See Alera AI's cutting-edge solutions in action. Choose your area of interest 
+            See Alera AI's cutting-edge solutions in action. Choose your area of interest
             and we'll customize the demo to your specific needs.
           </p>
         </motion.div>
@@ -99,11 +119,10 @@ const Demo = ({ onBack }) => {
                 return (
                   <div
                     key={demo.id}
-                    className={`p-6 rounded-xl border cursor-pointer transition-all ${
-                      selectedDemo === demo.id
-                        ? 'border-blue-500 bg-blue-500/10'
-                        : 'border-slate-700/50 bg-slate-800/50 hover:border-blue-500/30'
-                    }`}
+                    className={`p-6 rounded-xl border cursor-pointer transition-all ${selectedDemo === demo.id
+                      ? 'border-blue-500 bg-blue-500/10'
+                      : 'border-slate-700/50 bg-slate-800/50 hover:border-blue-500/30'
+                      }`}
                     onClick={() => setSelectedDemo(demo.id)}
                   >
                     <div className="flex items-start space-x-4">
@@ -140,7 +159,7 @@ const Demo = ({ onBack }) => {
             className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
           >
             <h2 className="text-2xl font-bold text-white mb-6">Your Information</h2>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -233,13 +252,19 @@ const Demo = ({ onBack }) => {
                 />
               </div>
 
-              <Button 
+              <Button
                 type="submit"
-                disabled={!selectedDemo}
+                disabled={!selectedDemo || isSubmitting}
                 className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule Demo
+                {isSubmitting ? (
+                  'Scheduling...'
+                ) : (
+                  <>
+                    <Calendar className="mr-2 h-4 w-4" />
+                    Schedule Demo
+                  </>
+                )}
               </Button>
             </form>
           </motion.div>

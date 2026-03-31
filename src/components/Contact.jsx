@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mail, Phone, MapPin, Send, MessageSquare, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { submitToFormspree } from '../services/formService';
 
 const Contact = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,11 +22,25 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    const result = await submitToFormspree({
+      ...formData,
+      formType: 'Contact'
+    });
+
+    setIsSubmitting(false);
+    if (result.success) {
+      setSubmitStatus({ type: 'success', message: 'Thank you! Your message has been sent successfully.' });
+      setFormData({ name: '', email: '', company: '', service: '', message: '' });
+    } else {
+      setSubmitStatus({ type: 'error', message: result.message });
+    }
   };
+
 
   const contactInfo = [
     {
@@ -86,7 +103,7 @@ const Contact = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl text-gray-300 max-w-3xl mx-auto"
           >
-            Ready to transform your development process with AI? 
+            Ready to transform your development process with AI?
             Let's discuss how we can help you achieve your goals.
           </motion.p>
         </div>
@@ -100,7 +117,7 @@ const Contact = () => {
             className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
           >
             <h3 className="text-2xl font-bold text-white mb-6">Send us a message</h3>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -179,12 +196,13 @@ const Contact = () => {
                 />
               </div>
 
-              <Button 
+              <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3 disabled:opacity-50"
               >
-                Send Message
-                <Send className="ml-2 h-4 w-4" />
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+                {!isSubmitting && <Send className="ml-2 h-4 w-4" />}
               </Button>
             </form>
           </motion.div>
@@ -199,8 +217,8 @@ const Contact = () => {
             <div>
               <h3 className="text-2xl font-bold text-white mb-6">Get in touch</h3>
               <p className="text-gray-300 text-lg leading-relaxed mb-8">
-                We'd love to hear from you. Whether you have a question about our services, 
-                need a consultation, or want to explore partnership opportunities, 
+                We'd love to hear from you. Whether you have a question about our services,
+                need a consultation, or want to explore partnership opportunities,
                 our team is ready to help.
               </p>
             </div>
@@ -227,15 +245,15 @@ const Contact = () => {
             <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl p-6">
               <h4 className="text-white font-bold mb-4">Quick Actions</h4>
               <div className="space-y-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full border-blue-500/50 text-blue-300 hover:bg-blue-500/10 justify-start"
                 >
                   <Calendar className="mr-3 h-4 w-4" />
                   Schedule a Consultation
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full border-purple-500/50 text-purple-300 hover:bg-purple-500/10 justify-start"
                 >
                   <MessageSquare className="mr-3 h-4 w-4" />

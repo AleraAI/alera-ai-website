@@ -2,11 +2,16 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, CheckCircle, Brain, Code, Layers, Heart, GraduationCap, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { submitToFormspree } from '../services/formService';
 
 const GetStarted = ({ onBack }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
   const [selectedServices, setSelectedServices] = useState([]);
   const [projectDetails, setProjectDetails] = useState({
+    name: '',
+    email: '',
     timeline: '',
     budget: '',
     teamSize: '',
@@ -23,8 +28,8 @@ const GetStarted = ({ onBack }) => {
   ];
 
   const toggleService = (serviceId) => {
-    setSelectedServices(prev => 
-      prev.includes(serviceId) 
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
         ? prev.filter(id => id !== serviceId)
         : [...prev, serviceId]
     );
@@ -37,50 +42,27 @@ const GetStarted = ({ onBack }) => {
     });
   };
 
-  const handleSubmit = () => {
-    console.log('Project submission:', { selectedServices, projectDetails });
-    
-    // Create a comprehensive submission summary
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
     const submissionSummary = {
       services: selectedServices.map(serviceId => {
         const service = services.find(s => s.id === serviceId);
         return service?.name;
       }).join(', '),
-      timeline: projectDetails.timeline,
-      budget: projectDetails.budget,
-      teamSize: projectDetails.teamSize,
-      description: projectDetails.description,
-      submissionDate: new Date().toLocaleDateString()
+      ...projectDetails,
+      formType: 'Get Started / Project Request'
     };
-    
-    // Show detailed confirmation
-    alert(`🎉 Thank you for your project submission!
 
-📋 SUBMISSION SUMMARY:
-• Services: ${submissionSummary.services}
-• Timeline: ${submissionSummary.timeline || 'Not specified'}
-• Budget: ${submissionSummary.budget || 'Not specified'}
-• Team Size: ${submissionSummary.teamSize || 'Not specified'}
+    const result = await submitToFormspree(submissionSummary);
 
-📞 NEXT STEPS:
-1. Our team will review your requirements within 24 hours
-2. You'll receive a detailed proposal via email within 48 hours
-3. We'll schedule a strategy call to discuss your project
-4. Custom pricing and timeline will be provided
-
-📧 CONTACT: We'll reach out to discuss your specific needs and provide a customized solution.
-
-Thank you for choosing Alera AI! 🚀`);
-    
-    // Reset form after submission
-    setCurrentStep(1);
-    setSelectedServices([]);
-    setProjectDetails({
-      timeline: '',
-      budget: '',
-      teamSize: '',
-      description: ''
-    });
+    setIsSubmitting(false);
+    if (result.success) {
+      setSubmitStatus({ type: 'success', message: 'Success! Your project request has been submitted. Our team will contact you soon.' });
+    } else {
+      setSubmitStatus({ type: 'error', message: result.message });
+    }
   };
 
   const steps = [
@@ -94,30 +76,28 @@ Thank you for choosing Alera AI! 🚀`);
       <div className="container mx-auto max-w-4xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={onBack}
             className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>
-          
+
           {/* Progress Steps */}
           <div className="flex items-center space-x-4">
             {steps.map((step, index) => (
               <div key={step.number} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                  currentStep >= step.number 
-                    ? 'bg-blue-500 text-white' 
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${currentStep >= step.number
+                    ? 'bg-blue-500 text-white'
                     : 'bg-slate-700 text-gray-400'
-                }`}>
+                  }`}>
                   {currentStep > step.number ? <CheckCircle className="h-4 w-4" /> : step.number}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`w-12 h-0.5 mx-2 ${
-                    currentStep > step.number ? 'bg-blue-500' : 'bg-slate-700'
-                  }`} />
+                  <div className={`w-12 h-0.5 mx-2 ${currentStep > step.number ? 'bg-blue-500' : 'bg-slate-700'
+                    }`} />
                 )}
               </div>
             ))}
@@ -138,222 +118,294 @@ Thank you for choosing Alera AI! 🚀`);
           </p>
         </motion.div>
 
-        {/* Step 1: Service Selection */}
-        {currentStep === 1 && (
+        {submitStatus?.type === 'success' ? (
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-slate-800/50 rounded-2xl p-12 border border-blue-500/30 text-center"
           >
-            <h2 className="text-2xl font-bold text-white mb-6">Select the services you need</h2>
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
-              {services.map((service) => {
-                const IconComponent = service.icon;
-                const isSelected = selectedServices.includes(service.id);
-                return (
-                  <div
-                    key={service.id}
-                    className={`p-6 rounded-xl border cursor-pointer transition-all ${
-                      isSelected
-                        ? 'border-blue-500 bg-blue-500/10'
-                        : 'border-slate-700/50 bg-slate-700/30 hover:border-blue-500/30'
-                    }`}
-                    onClick={() => toggleService(service.id)}
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                        <IconComponent className="h-6 w-6 text-blue-400" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-bold text-white">{service.name}</h3>
-                        <p className="text-gray-300">{service.description}</p>
-                      </div>
-                      {isSelected && <CheckCircle className="h-6 w-6 text-blue-400" />}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="h-10 w-10 text-green-400" />
             </div>
-            <div className="flex justify-end">
-              <Button 
-                onClick={() => setCurrentStep(2)}
-                disabled={selectedServices.length === 0}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 disabled:opacity-50"
-              >
-                Next Step
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
+            <h2 className="text-3xl font-bold text-white mb-4">Request Submitted!</h2>
+            <p className="text-xl text-gray-300 mb-8 max-w-lg mx-auto">
+              Thank you for choosing Alera AI. Our team will review your requirements and reach out within 24 hours with a detailed proposal.
+            </p>
+            <Button
+              onClick={onBack}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3"
+            >
+              Back to Home
+            </Button>
           </motion.div>
-        )}
-
-        {/* Step 2: Project Details */}
-        {currentStep === 2 && (
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
-          >
-            <h2 className="text-2xl font-bold text-white mb-6">Tell us about your project</h2>
-            <div className="space-y-6 mb-8">
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">
-                    Project Timeline
-                  </label>
-                  <select
-                    name="timeline"
-                    value={projectDetails.timeline}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
-                  >
-                    <option value="">Select timeline</option>
-                    <option value="1-3 months">1-3 months</option>
-                    <option value="3-6 months">3-6 months</option>
-                    <option value="6-12 months">6-12 months</option>
-                    <option value="12+ months">12+ months</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">
-                    Budget Range
-                  </label>
-                  <select
-                    name="budget"
-                    value={projectDetails.budget}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
-                  >
-                    <option value="">Select budget range</option>
-                    <option value="$10k-$50k">$10k - $50k</option>
-                    <option value="$50k-$100k">$50k - $100k</option>
-                    <option value="$100k-$500k">$100k - $500k</option>
-                    <option value="$500k+">$500k+</option>
-                  </select>
-                </div>
+        ) : (
+          <>
+            {submitStatus?.type === 'error' && (
+              <div className="mb-8 p-4 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg">
+                {submitStatus.message}
               </div>
+            )}
 
-              <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2">
-                  Team Size
-                </label>
-                <select
-                  name="teamSize"
-                  value={projectDetails.teamSize}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
-                >
-                  <option value="">Select team size</option>
-                  <option value="1-5">1-5 people</option>
-                  <option value="6-20">6-20 people</option>
-                  <option value="21-100">21-100 people</option>
-                  <option value="100+">100+ people</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2">
-                  Project Description
-                </label>
-                <textarea
-                  name="description"
-                  value={projectDetails.description}
-                  onChange={handleInputChange}
-                  rows={5}
-                  className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors resize-none"
-                  placeholder="Describe your project goals, challenges, and requirements..."
-                />
-              </div>
-            </div>
-            
-            <div className="flex justify-between">
-              <Button 
-                variant="outline"
-                onClick={() => setCurrentStep(1)}
-                className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 px-8 py-3"
+            {/* Step 1: Service Selection */}
+            {currentStep === 1 && (
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Previous
-              </Button>
-              <Button 
-                onClick={() => setCurrentStep(3)}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3"
-              >
-                Get Quote
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Step 3: Final Submission */}
-        {currentStep === 3 && (
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
-          >
-            <h2 className="text-2xl font-bold text-white mb-6">Review Your Request</h2>
-            
-            <div className="space-y-6 mb-8">
-              <div>
-                <h3 className="text-lg font-semibold text-white mb-3">Selected Services:</h3>
-                <div className="flex flex-wrap gap-2">
-                  {selectedServices.map(serviceId => {
-                    const service = services.find(s => s.id === serviceId);
+                <h2 className="text-2xl font-bold text-white mb-6">Select the services you need</h2>
+                <div className="grid md:grid-cols-2 gap-4 mb-8">
+                  {services.map((service) => {
+                    const IconComponent = service.icon;
+                    const isSelected = selectedServices.includes(service.id);
                     return (
-                      <span key={serviceId} className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">
-                        {service?.name}
-                      </span>
+                      <div
+                        key={service.id}
+                        className={`p-6 rounded-xl border cursor-pointer transition-all ${isSelected
+                            ? 'border-blue-500 bg-blue-500/10'
+                            : 'border-slate-700/50 bg-slate-700/30 hover:border-blue-500/30'
+                          }`}
+                        onClick={() => toggleService(service.id)}
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                            <IconComponent className="h-6 w-6 text-blue-400" />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-lg font-bold text-white">{service.name}</h3>
+                            <p className="text-gray-300">{service.description}</p>
+                          </div>
+                          {isSelected && <CheckCircle className="h-6 w-6 text-blue-400" />}
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
-              </div>
+                <div className="flex justify-end">
+                  <Button
+                    onClick={() => setCurrentStep(2)}
+                    disabled={selectedServices.length === 0}
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 disabled:opacity-50"
+                  >
+                    Next Step
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
 
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <h4 className="text-white font-medium">Timeline</h4>
-                  <p className="text-gray-300">{projectDetails.timeline || 'Not specified'}</p>
-                </div>
-                <div>
-                  <h4 className="text-white font-medium">Budget</h4>
-                  <p className="text-gray-300">{projectDetails.budget || 'Not specified'}</p>
-                </div>
-                <div>
-                  <h4 className="text-white font-medium">Team Size</h4>
-                  <p className="text-gray-300">{projectDetails.teamSize || 'Not specified'}</p>
-                </div>
-              </div>
-
-              {projectDetails.description && (
-                <div>
-                  <h4 className="text-white font-medium mb-2">Project Description</h4>
-                  <p className="text-gray-300 bg-slate-700/30 p-4 rounded-lg">{projectDetails.description}</p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-between">
-              <Button 
-                variant="outline"
-                onClick={() => setCurrentStep(2)}
-                className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 px-8 py-3"
+            {/* Step 2: Project Details */}
+            {currentStep === 2 && (
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Previous
-              </Button>
-              <Button 
-                onClick={handleSubmit}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3"
+                <h2 className="text-2xl font-bold text-white mb-6">Tell us about your project</h2>
+                <div className="space-y-6 mb-8">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-gray-300 text-sm font-medium mb-2">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={projectDetails.name}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+                        placeholder="Your name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-300 text-sm font-medium mb-2">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={projectDetails.email}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+                        placeholder="your@email.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-gray-300 text-sm font-medium mb-2">
+                        Project Timeline
+                      </label>
+                      <select
+                        name="timeline"
+                        value={projectDetails.timeline}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+                      >
+                        <option value="">Select timeline</option>
+                        <option value="1-3 months">1-3 months</option>
+                        <option value="3-6 months">3-6 months</option>
+                        <option value="6-12 months">6-12 months</option>
+                        <option value="12+ months">12+ months</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-gray-300 text-sm font-medium mb-2">
+                        Budget Range
+                      </label>
+                      <select
+                        name="budget"
+                        value={projectDetails.budget}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+                      >
+                        <option value="">Select budget range</option>
+                        <option value="$10k-$50k">$10k - $50k</option>
+                        <option value="$50k-$100k">$50k - $100k</option>
+                        <option value="$100k-$500k">$100k - $500k</option>
+                        <option value="$500k+">$500k+</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-300 text-sm font-medium mb-2">
+                      Team Size
+                    </label>
+                    <select
+                      name="teamSize"
+                      value={projectDetails.teamSize}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors"
+                    >
+                      <option value="">Select team size</option>
+                      <option value="1-5">1-5 people</option>
+                      <option value="6-20">6-20 people</option>
+                      <option value="21-100">21-100 people</option>
+                      <option value="100+">100+ people</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-300 text-sm font-medium mb-2">
+                      Project Description
+                    </label>
+                    <textarea
+                      name="description"
+                      value={projectDetails.description}
+                      onChange={handleInputChange}
+                      rows={5}
+                      className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                      placeholder="Describe your project goals, challenges, and requirements..."
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-between">
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentStep(1)}
+                    className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 px-8 py-3"
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Previous
+                  </Button>
+                  <Button
+                    onClick={() => setCurrentStep(3)}
+                    disabled={!projectDetails.name || !projectDetails.email}
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 disabled:opacity-50"
+                  >
+                    Next Step
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 3: Final Submission */}
+            {currentStep === 3 && (
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700/50"
               >
-                Submit Request
-                <CheckCircle className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </motion.div>
+                <h2 className="text-2xl font-bold text-white mb-6">Review Your Request</h2>
+
+                <div className="space-y-6 mb-8">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-3">Contact Details:</h3>
+                      <div className="space-y-1">
+                        <p className="text-white font-medium">{projectDetails.name}</p>
+                        <p className="text-gray-400 text-sm">{projectDetails.email}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-3">Selected Services:</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedServices.map(serviceId => {
+                          const service = services.find(s => s.id === serviceId);
+                          return (
+                            <span key={serviceId} className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">
+                              {service?.name}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-4 border-t border-slate-700/50 pt-6">
+                    <div>
+                      <h4 className="text-white font-medium">Timeline</h4>
+                      <p className="text-gray-300">{projectDetails.timeline || 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-medium">Budget</h4>
+                      <p className="text-gray-300">{projectDetails.budget || 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-medium">Team Size</h4>
+                      <p className="text-gray-300">{projectDetails.teamSize || 'Not specified'}</p>
+                    </div>
+                  </div>
+
+                  {projectDetails.description && (
+                    <div className="border-t border-slate-700/50 pt-6">
+                      <h4 className="text-white font-medium mb-2">Project Description</h4>
+                      <p className="text-gray-300 bg-slate-700/30 p-4 rounded-lg">{projectDetails.description}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-between">
+                  <Button
+                    variant="outline"
+                    disabled={isSubmitting}
+                    onClick={() => setCurrentStep(2)}
+                    className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 px-8 py-3 disabled:opacity-50"
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Previous
+                  </Button>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 disabled:opacity-50"
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                    {!isSubmitting && <CheckCircle className="ml-2 h-4 w-4" />}
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -361,4 +413,3 @@ Thank you for choosing Alera AI! 🚀`);
 };
 
 export default GetStarted;
-
