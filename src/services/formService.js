@@ -3,7 +3,7 @@
  * Handles submissions to Web3Forms (Free 250 submissions/month)
  */
 
-const WEB3FORMS_KEY = 'YOUR_WEB3FORMS_KEY'; // Replace with your actual Web3Forms Access Key
+const WEB3FORMS_KEY = 'd18becb2-8bc4-4d50-a83a-7be4cccb1834'; // User's Web3Forms Access Key
 
 export const submitToWeb3Forms = async (data, accessKey = WEB3FORMS_KEY) => {
     try {
