@@ -1,14 +1,47 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import aleraLogo from '../assets/alera-ai-logo.png';
 
-const Header = ({ onGetStarted, onNavigate }) => {
+const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavClick = (section) => {
     setIsMenuOpen(false);
-    onNavigate(section);
+
+    if (section === 'blog') {
+      navigate('/blog');
+    } else if (section === 'courses') {
+      navigate('/courses');
+    } else if (section === 'home') {
+      navigate('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // If we're not on home, go home first
+      if (location.pathname !== '/') {
+        navigate('/');
+        // Wait for navigation and then scroll
+        setTimeout(() => {
+          const element = document.getElementById(section);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      } else {
+        const element = document.getElementById(section);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+  };
+
+  const onGetStarted = () => {
+    setIsMenuOpen(false);
+    navigate('/get-started');
   };
 
   return (
@@ -16,9 +49,9 @@ const Header = ({ onGetStarted, onNavigate }) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => handleNavClick('home')}>
-            <img src={aleraLogo} alt="Alera AI" className="h-12 w-auto" />
-          </div>
+          <Link to="/" className="flex items-center space-x-2" onClick={() => handleNavClick('home')}>
+            <img src={aleraLogo} alt="Alera AI" className="h-16 w-auto" />
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -44,7 +77,7 @@ const Header = ({ onGetStarted, onNavigate }) => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <Button 
+            <Button
               onClick={onGetStarted}
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-2"
             >
@@ -83,7 +116,7 @@ const Header = ({ onGetStarted, onNavigate }) => {
               <button onClick={() => handleNavClick('contact')} className="text-gray-300 hover:text-blue-400 transition-colors text-left">
                 Contact
               </button>
-              <Button 
+              <Button
                 onClick={onGetStarted}
                 className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white w-full mt-4"
               >
@@ -98,4 +131,5 @@ const Header = ({ onGetStarted, onNavigate }) => {
 };
 
 export default Header;
+
 

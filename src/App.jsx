@@ -1,112 +1,107 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './styles/App.css';
 import Header from './components/Header.jsx';
 import Hero from './components/Hero.jsx';
 import Services from './components/Services.jsx';
 import About from './components/About.jsx';
 import Contact from './components/Contact.jsx';
-import Footer from './components/Footer.jsx';
+import MainFooter from './components/MainFooter.jsx';
 import Demo from './components/Demo.jsx';
 import GetStarted from './components/GetStarted.jsx';
 import ServiceDetail from './components/ServiceDetail.jsx';
 import Blog from './components/Blog.jsx';
 import BlogPost from './components/BlogPost.jsx';
 import Courses from './components/Courses.jsx';
+import DeepLoopPrivacy from './components/DeepLoopPrivacy.jsx';
+import DeepLoopTerms from './components/DeepLoopTerms.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
-function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [selectedService, setSelectedService] = useState(null);
-  const [selectedBlogPost, setSelectedBlogPost] = useState(null);
-
-  const navigateTo = (page, data = null) => {
-    setCurrentPage(page);
-    if (data) {
-      if (page === 'service-detail') {
-        setSelectedService(data);
-      } else if (page === 'blog-post') {
-        setSelectedBlogPost(data);
-      }
-    }
-  };
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'demo':
-        return <Demo onBack={() => navigateTo('home')} />;
-      case 'get-started':
-        return <GetStarted onBack={() => navigateTo('home')} />;
-      case 'service-detail':
-        return (
-          <ServiceDetail 
-            service={selectedService}
-            onBack={() => navigateTo('home')}
-            onRequestDemo={() => navigateTo('demo')}
-            onContact={() => navigateTo('home')}
-          />
-        );
-      case 'blog':
-        return (
-          <Blog 
-            onBack={() => navigateTo('home')}
-            onArticleClick={(article) => navigateTo('blog-post', article)}
-          />
-        );
-      case 'blog-post':
-        return (
-          <BlogPost 
-            post={selectedBlogPost}
-            onBack={() => navigateTo('blog')}
-          />
-        );
-      case 'courses':
-        return (
-          <Courses 
-            onBack={() => navigateTo('home')}
-          />
-        );
-      default:
-        return (
-          <>
-            <Hero onRequestDemo={() => navigateTo('demo')} onGetStarted={() => navigateTo('get-started')} />
-            <Services onLearnMore={(service) => navigateTo('service-detail', service)} />
-            <About />
-            <Contact />
-          </>
-        );
-    }
-  };
-
+function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-      <Header 
-        onGetStarted={() => navigateTo('get-started')}
-        onNavigate={(section) => {
-          if (section === 'blog') {
-            navigateTo('blog');
-          } else if (section === 'courses') {
-            navigateTo('courses');
-          } else {
-            navigateTo('home');
-            // Scroll to section after a brief delay
-            setTimeout(() => {
-              const element = document.getElementById(section);
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-              }
-            }, 100);
-          }
-        }}
-      />
-      {renderPage()}
-      {currentPage === 'home' && (
-        <Footer 
-          onNavigate={(page) => navigateTo(page)}
-          onBlogClick={() => navigateTo('blog')}
-        />
-      )}
-    </div>
+    <>
+      <section id="hero">
+        <Hero />
+      </section>
+      <section id="services">
+        <Services />
+      </section>
+      <section id="about">
+        <About />
+      </section>
+      <section id="contact">
+        <Contact />
+      </section>
+    </>
   );
 }
+
+function App() {
+  return (
+    <>
+      <ScrollToTop />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/demo" element={<Demo />} />
+            <Route path="/get-started" element={<GetStarted />} />
+            <Route path="/services/:id" element={<ServiceDetailWrapper />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogPostWrapper />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/products/deeploop/privacy" element={<DeepLoopPrivacy />} />
+            <Route path="/products/deeploop/terms" element={<DeepLoopTerms />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+        <MainFooter />
+      </div>
+    </>
+  );
+}
+
+
+// Wrappers to handle params and legacy prop-based components
+import { useParams, useNavigate } from 'react-router-dom';
+import { services } from './data/servicesData';
+import { blogPosts } from './data/blogData';
+
+function ServiceDetailWrapper() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  return (
+    <ServiceDetail
+      service={id}
+      onBack={() => navigate('/')}
+      onRequestDemo={() => navigate('/demo')}
+      onContact={() => {
+        navigate('/');
+        setTimeout(() => {
+          document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }}
+    />
+  );
+}
+
+function BlogPostWrapper() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const post = blogPosts.find(p => p.id === parseInt(id));
+
+  if (!post) {
+    return <Navigate to="/blog" replace />;
+  }
+
+  return (
+    <BlogPost
+      post={post}
+      onBack={() => navigate('/blog')}
+    />
+  );
+}
+
 
 export default App;

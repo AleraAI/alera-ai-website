@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, Users, Clock, Star, ExternalLink, CheckCircle, Award, BookOpen, Target, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-const Courses = ({ onBack }) => {
+const Courses = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const categories = [
@@ -446,8 +448,8 @@ const Courses = ({ onBack }) => {
     }
   ];
 
-  const filteredCourses = selectedCategory === 'all' 
-    ? courses 
+  const filteredCourses = selectedCategory === 'all'
+    ? courses
     : courses.filter(course => course.category === selectedCategory);
 
   const featuredCourses = courses.filter(course => course.featured);
@@ -457,9 +459,9 @@ const Courses = ({ onBack }) => {
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
         <div className="flex items-center mb-8">
-          <Button 
-            variant="outline" 
-            onClick={onBack}
+          <Button
+            variant="outline"
+            onClick={() => navigate('/')}
             className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 mr-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -477,11 +479,11 @@ const Courses = ({ onBack }) => {
             AI Training & Education
           </h1>
           <p className="text-xl text-gray-300 max-w-4xl mx-auto mb-8">
-            Master cutting-edge AI technologies with hands-on courses taught by industry experts. 
-            From foundational concepts to production deployment, we offer comprehensive training 
+            Master cutting-edge AI technologies with hands-on courses taught by industry experts.
+            From foundational concepts to production deployment, we offer comprehensive training
             for every skill level and career stage.
           </p>
-          
+
           {/* Stats */}
           <div className="grid md:grid-cols-4 gap-6 max-w-3xl mx-auto">
             <div className="text-center">
@@ -512,8 +514,8 @@ const Courses = ({ onBack }) => {
                 key={category.id}
                 variant={selectedCategory === category.id ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category.id)}
-                className={selectedCategory === category.id 
-                  ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" 
+                className={selectedCategory === category.id
+                  ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white"
                   : "border-blue-500/50 text-blue-300 hover:bg-blue-500/10"
                 }
               >
@@ -542,7 +544,7 @@ const Courses = ({ onBack }) => {
                       FEATURED
                     </span>
                   </div>
-                  
+
                   <div className="mb-6">
                     <div className="flex items-center justify-between mb-2">
                       <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">
@@ -577,7 +579,7 @@ const Courses = ({ onBack }) => {
 
                   <div className="flex flex-col sm:flex-row gap-3">
                     {course.mavenUrl ? (
-                      <Button 
+                      <Button
                         onClick={() => {
                           console.log('Enrolling in course:', course.title);
                           window.open(course.mavenUrl, '_blank', 'noopener,noreferrer');
@@ -588,7 +590,7 @@ const Courses = ({ onBack }) => {
                         <ExternalLink className="ml-2 h-4 w-4" />
                       </Button>
                     ) : (
-                      <Button 
+                      <Button
                         onClick={() => {
                           console.log('Joining waitlist for:', course.title);
                           alert(`Thank you for your interest in ${course.title}! 
@@ -611,7 +613,7 @@ Thank you for choosing Alera AI! 🚀`);
                         Join Waitlist
                       </Button>
                     )}
-                    <Button 
+                    <Button
                       variant="outline"
                       className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10"
                     >
@@ -689,7 +691,7 @@ Thank you for choosing Alera AI! 🚀`);
 
                   <div className="space-y-2">
                     {course.mavenUrl ? (
-                      <Button 
+                      <Button
                         onClick={() => {
                           console.log('Enrolling in course:', course.title);
                           window.open(course.mavenUrl, '_blank', 'noopener,noreferrer');
@@ -700,7 +702,7 @@ Thank you for choosing Alera AI! 🚀`);
                         <ExternalLink className="ml-2 h-4 w-4" />
                       </Button>
                     ) : (
-                      <Button 
+                      <Button
                         onClick={() => {
                           console.log('Joining waitlist for:', course.title);
                           alert(`Thank you for your interest in ${course.title}! 
@@ -723,7 +725,7 @@ Thank you for choosing Alera AI! 🚀`);
                         Join Waitlist
                       </Button>
                     )}
-                    <Button 
+                    <Button
                       variant="outline"
                       className="w-full border-blue-500/50 text-blue-300 hover:bg-blue-500/10"
                     >
@@ -745,15 +747,15 @@ Thank you for choosing Alera AI! 🚀`);
         >
           <h3 className="text-3xl font-bold text-white mb-4">Custom Training Programs</h3>
           <p className="text-gray-300 mb-6 max-w-3xl mx-auto text-lg">
-            Need a custom training program for your team? We offer tailored courses designed 
-            specifically for your organization's needs, skill levels, and business objectives. 
+            Need a custom training program for your team? We offer tailored courses designed
+            specifically for your organization's needs, skill levels, and business objectives.
             From executive workshops to hands-on technical bootcamps.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3">
               Contact for Custom Training
             </Button>
-            <Button 
+            <Button
               variant="outline"
               className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 px-8 py-3"
             >

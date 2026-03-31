@@ -2,81 +2,27 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, User, ArrowRight, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { blogPosts } from '../data/blogData';
 
-const Blog = ({ onBack, onArticleClick }) => {
-  const blogPosts = [
-    {
-      id: 1,
-      title: "The Future of Small Language Models: Efficiency Meets Performance",
-      excerpt: "Exploring how SLMs are revolutionizing AI deployment with their compact size and specialized capabilities, making AI more accessible and cost-effective for businesses.",
-      author: "Dr. Sarah Chen",
-      date: "2024-01-15",
-      readTime: "8 min read",
-      category: "Language Models",
-      image: "/api/placeholder/400/250"
-    },
-    {
-      id: 2,
-      title: "Multimodal AI: Breaking Down the Barriers Between Data Types",
-      excerpt: "How combining text, image, audio, and video processing in unified systems is creating more intelligent and context-aware applications.",
-      author: "Alex Rodriguez",
-      date: "2024-01-12",
-      readTime: "6 min read",
-      category: "Multimodal AI",
-      image: "/api/placeholder/400/250"
-    },
-    {
-      id: 3,
-      title: "AI-Powered Code Review: Beyond Static Analysis",
-      excerpt: "Discover how machine learning is transforming code review processes, catching complex bugs and security vulnerabilities that traditional tools miss.",
-      author: "Michael Zhang",
-      date: "2024-01-10",
-      readTime: "10 min read",
-      category: "Code Analysis",
-      image: "/api/placeholder/400/250"
-    },
-    {
-      id: 4,
-      title: "Legacy Code Modernization: A Strategic Approach",
-      excerpt: "Best practices for transforming legacy systems into modern, maintainable codebases while preserving business logic and minimizing risks.",
-      author: "Jennifer Liu",
-      date: "2024-01-08",
-      readTime: "12 min read",
-      category: "Modernization",
-      image: "/api/placeholder/400/250"
-    },
-    {
-      id: 5,
-      title: "Building Recommendation Systems That Actually Work",
-      excerpt: "Learn the key principles behind successful recommendation engines and how to implement personalization that drives real business results.",
-      author: "David Park",
-      date: "2024-01-05",
-      readTime: "9 min read",
-      category: "Recommendations",
-      image: "/api/placeholder/400/250"
-    },
-    {
-      id: 6,
-      title: "AI Training Programs: Upskilling Your Team for the Future",
-      excerpt: "How to design effective AI education programs that build real capabilities and drive organizational transformation.",
-      author: "Dr. Emily Watson",
-      date: "2024-01-03",
-      readTime: "7 min read",
-      category: "Education",
-      image: "/api/placeholder/400/250"
-    }
-  ];
+const Blog = () => {
+  const navigate = useNavigate();
+
 
   const categories = ["All", "Language Models", "Multimodal AI", "Code Analysis", "Modernization", "Recommendations", "Education"];
+
+  const handleArticleClick = (id) => {
+    navigate(`/blog/${id}`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 py-20 px-4">
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
         <div className="flex items-center mb-8">
-          <Button 
-            variant="outline" 
-            onClick={onBack}
+          <Button
+            variant="outline"
+            onClick={() => navigate('/')}
             className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 mr-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -94,7 +40,7 @@ const Blog = ({ onBack, onArticleClick }) => {
             AI Insights & Updates
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Stay updated with the latest trends, insights, and best practices in artificial intelligence, 
+            Stay updated with the latest trends, insights, and best practices in artificial intelligence,
             machine learning, and code modernization.
           </p>
         </motion.div>
@@ -121,7 +67,7 @@ const Blog = ({ onBack, onArticleClick }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
               className="bg-slate-800/50 rounded-2xl border border-slate-700/50 overflow-hidden hover:border-blue-500/30 transition-all cursor-pointer group"
-              onClick={() => onArticleClick && onArticleClick(post)}
+              onClick={() => handleArticleClick(post.id)}
             >
               {/* Image Placeholder */}
               <div className="h-48 bg-gradient-to-br from-blue-500/20 to-purple-500/20 relative overflow-hidden">
@@ -159,8 +105,8 @@ const Blog = ({ onBack, onArticleClick }) => {
                     <Clock className="h-4 w-4" />
                     <span className="text-sm">{post.readTime}</span>
                   </div>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     size="sm"
                     className="text-blue-400 hover:text-blue-300 p-0"
                   >
@@ -182,7 +128,7 @@ const Blog = ({ onBack, onArticleClick }) => {
         >
           <h3 className="text-2xl font-bold text-white mb-4">Stay Updated</h3>
           <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-            Subscribe to our newsletter to get the latest AI insights, case studies, 
+            Subscribe to our newsletter to get the latest AI insights, case studies,
             and industry updates delivered to your inbox.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
@@ -202,4 +148,5 @@ const Blog = ({ onBack, onArticleClick }) => {
 };
 
 export default Blog;
+
 

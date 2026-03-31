@@ -2,8 +2,11 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, Code, Brain, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-const Hero = ({ onRequestDemo, onGetStarted }) => {
+const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="home" className="pt-24 pb-16 px-4 relative overflow-hidden">
       {/* Background Elements */}
@@ -45,7 +48,7 @@ const Hero = ({ onRequestDemo, onGetStarted }) => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
           >
-            From language models and multimodal AI to intelligent code modernization and personalization systems. 
+            From language models and multimodal AI to intelligent code modernization and personalization systems.
             Accelerate innovation with cutting-edge AI technology and expert training.
           </motion.p>
 
@@ -56,16 +59,16 @@ const Hero = ({ onRequestDemo, onGetStarted }) => {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            <Button 
-              onClick={onRequestDemo}
+            <Button
+              onClick={() => navigate('/demo')}
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 text-lg group"
             >
               Request Demo
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button 
-              variant="outline" 
-              onClick={onGetStarted}
+            <Button
+              variant="outline"
+              onClick={() => navigate('/get-started')}
               className="border-blue-500/50 text-blue-300 hover:bg-blue-500/10 px-8 py-4 text-lg"
             >
               Get Started
@@ -79,28 +82,28 @@ const Hero = ({ onRequestDemo, onGetStarted }) => {
             transition={{ duration: 1, delay: 0.8 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
           >
-            <div className="flex flex-col items-center space-y-3 group">
+            <div className="flex flex-col items-center space-y-3 group cursor-pointer" onClick={() => navigate('/services/llm')}>
               <div className="p-4 bg-blue-500/10 rounded-xl border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors">
                 <Brain className="h-8 w-8 text-blue-400" />
               </div>
               <span className="text-gray-300 font-medium">LLMs & SLMs</span>
             </div>
-            
-            <div className="flex flex-col items-center space-y-3 group">
+
+            <div className="flex flex-col items-center space-y-3 group cursor-pointer" onClick={() => navigate('/services/multimodal')}>
               <div className="p-4 bg-purple-500/10 rounded-xl border border-purple-500/20 group-hover:bg-purple-500/20 transition-colors">
                 <Layers className="h-8 w-8 text-purple-400" />
               </div>
               <span className="text-gray-300 font-medium">Multimodal AI</span>
             </div>
-            
-            <div className="flex flex-col items-center space-y-3 group">
+
+            <div className="flex flex-col items-center space-y-3 group cursor-pointer" onClick={() => navigate('/services/code-review')}>
               <div className="p-4 bg-green-500/10 rounded-xl border border-green-500/20 group-hover:bg-green-500/20 transition-colors">
                 <Code className="h-8 w-8 text-green-400" />
               </div>
               <span className="text-gray-300 font-medium">Code Review</span>
             </div>
-            
-            <div className="flex flex-col items-center space-y-3 group">
+
+            <div className="flex flex-col items-center space-y-3 group cursor-pointer" onClick={() => navigate('/services/modernization')}>
               <div className="p-4 bg-orange-500/10 rounded-xl border border-orange-500/20 group-hover:bg-orange-500/20 transition-colors">
                 <Sparkles className="h-8 w-8 text-orange-400" />
               </div>
@@ -114,4 +117,5 @@ const Hero = ({ onRequestDemo, onGetStarted }) => {
 };
 
 export default Hero;
+
 
