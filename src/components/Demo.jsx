@@ -31,7 +31,7 @@ const Demo = ({ onBack }) => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    const result = await submitToFormspree({
+    const result = await submitToWeb3Forms({
       ...formData,
       selectedDemo,
       formType: 'Demo Request'

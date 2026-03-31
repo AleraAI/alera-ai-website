@@ -27,7 +27,7 @@ const Contact = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    const result = await submitToFormspree({
+    const result = await submitToWeb3Forms({
       ...formData,
       formType: 'Contact'
     });

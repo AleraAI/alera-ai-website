@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, CheckCircle, Brain, Code, Layers, Heart, GraduationCap, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { submitToFormspree } from '../services/formService';
+import { submitToWeb3Forms } from '../services/formService';
 
 const GetStarted = ({ onBack }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -90,8 +90,8 @@ const GetStarted = ({ onBack }) => {
             {steps.map((step, index) => (
               <div key={step.number} className="flex items-center">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${currentStep >= step.number
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-700 text-gray-400'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-slate-700 text-gray-400'
                   }`}>
                   {currentStep > step.number ? <CheckCircle className="h-4 w-4" /> : step.number}
                 </div>
@@ -163,8 +163,8 @@ const GetStarted = ({ onBack }) => {
                       <div
                         key={service.id}
                         className={`p-6 rounded-xl border cursor-pointer transition-all ${isSelected
-                            ? 'border-blue-500 bg-blue-500/10'
-                            : 'border-slate-700/50 bg-slate-700/30 hover:border-blue-500/30'
+                          ? 'border-blue-500 bg-blue-500/10'
+                          : 'border-slate-700/50 bg-slate-700/30 hover:border-blue-500/30'
                           }`}
                         onClick={() => toggleService(service.id)}
                       >

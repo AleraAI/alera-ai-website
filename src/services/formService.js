@@ -1,33 +1,35 @@
 /**
  * Form Service for Alera AI
- * Handles submissions to Formspree
+ * Handles submissions to Web3Forms (Free 250 submissions/month)
  */
 
-const FORMSPREE_ID = 'YOUR_FORMSPREE_ID'; // Replace with your actual Formspree ID
+const WEB3FORMS_KEY = 'YOUR_WEB3FORMS_KEY'; // Replace with your actual Web3Forms Access Key
 
-export const submitToFormspree = async (data, formId = FORMSPREE_ID) => {
+export const submitToWeb3Forms = async (data, accessKey = WEB3FORMS_KEY) => {
     try {
-        const response = await fetch(`https://formspree.io/f/${formId}`, {
+        const response = await fetch('https://api.web3forms.com/submit', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({
+                access_key: accessKey,
+                ...data,
+                from_name: 'Alera AI Website',
+                subject: `New ${data.formType || 'Form'} Submission from Alera AI`
+            })
         });
 
-        if (response.ok) {
+        const result = await response.json();
+
+        if (result.success) {
             return { success: true, message: 'Submission successful!' };
         } else {
-            let message = 'Oops! There was a problem submitting your form.';
-            try {
-                const errorData = await response.json();
-                message = errorData.error || message;
-            } catch (e) {
-                // Fallback for non-JSON errors
-                if (response.status === 404) message = 'Form endpoint not found. Please check your Formspree ID.';
-            }
-            return { success: false, message };
+            return {
+                success: false,
+                message: result.message || 'Oops! There was a problem submitting your form.'
+            };
         }
     } catch (error) {
         return {
