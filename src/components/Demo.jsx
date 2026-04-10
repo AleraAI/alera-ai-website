@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Play, Calendar, CheckCircle, Brain, Code, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { submitToFormspree } from '../services/formService';
+import { submitToWeb3Forms } from '../services/formService';
 
 const Demo = ({ onBack }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -251,6 +251,13 @@ const Demo = ({ onBack }) => {
                   placeholder="Tell us about your specific use case and requirements..."
                 />
               </div>
+
+              {submitStatus && (
+                <div className={`mb-6 p-4 rounded-lg text-sm ${submitStatus.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                  }`}>
+                  {submitStatus.message}
+                </div>
+              )}
 
               <Button
                 type="submit"

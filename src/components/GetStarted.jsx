@@ -55,7 +55,7 @@ const GetStarted = ({ onBack }) => {
       formType: 'Get Started / Project Request'
     };
 
-    const result = await submitToFormspree(submissionSummary);
+    const result = await submitToWeb3Forms(submissionSummary);
 
     setIsSubmitting(false);
     if (result.success) {
@@ -384,6 +384,13 @@ const GetStarted = ({ onBack }) => {
                   )}
                 </div>
 
+                {submitStatus && (
+                  <div className={`mb-6 p-4 rounded-lg text-sm ${submitStatus.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                    }`}>
+                    {submitStatus.message}
+                  </div>
+                )}
+
                 <div className="flex justify-between">
                   <Button
                     variant="outline"
@@ -399,8 +406,12 @@ const GetStarted = ({ onBack }) => {
                     disabled={isSubmitting}
                     className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 disabled:opacity-50"
                   >
-                    {isSubmitting ? 'Submitting...' : 'Submit Request'}
-                    {!isSubmitting && <CheckCircle className="ml-2 h-4 w-4" />}
+                    {isSubmitting ? 'Submitting...' : (
+                      <>
+                        Submit Request
+                        <CheckCircle className="ml-2 h-4 w-4" />
+                      </>
+                    )}
                   </Button>
                 </div>
               </motion.div>
