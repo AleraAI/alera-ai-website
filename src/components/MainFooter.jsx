@@ -56,10 +56,12 @@ const MainFooter = () => {
                         <li><Link to="/products/deeploop/privacy" className="hover:text-white transition-colors">DeepLoop Privacy</Link></li>
                         <li><Link to="/products/deeploop/terms" className="hover:text-white transition-colors">DeepLoop Terms</Link></li>
                         <li><Link to="/products/deeploop/support" className="hover:text-white transition-colors">DeepLoop Support</Link></li>
+                        <li><Link to="/products/deeploop/data-deletion" className="hover:text-white transition-colors">DeepLoop Data Deletion</Link></li>
                     </ul>
                 </div>
 
                 {/* Contact Info */}
+
 
                 <div>
                     <h4 className="text-white font-semibold mb-6">Contact</h4>
