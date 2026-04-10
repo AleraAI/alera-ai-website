@@ -40,24 +40,6 @@ const DeepLoopSupport = () => {
         }
     };
 
-    const supportResources = [
-        {
-            title: "Getting Started Guide",
-            description: "Learn the basics of setting up and using DeepLoop in your workflow.",
-            icon: MessageSquare
-        },
-        {
-            title: "Email Support",
-            description: "Direct email support: support@alera.ai",
-            icon: Mail
-        },
-        {
-            title: "Known Issues",
-            description: "Check the status of known bugs or ongoing enhancements.",
-            icon: AlertCircle
-        }
-    ];
-
     return (
         <div className="pt-24 pb-20 px-4 min-h-screen">
             <div className="container mx-auto max-w-6xl">
@@ -89,13 +71,13 @@ const DeepLoopSupport = () => {
                     </motion.p>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-12">
+                <div className="max-w-3xl mx-auto">
                     {/* Support Form */}
                     <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="lg:col-span-2 bg-slate-800/50 rounded-2xl border border-slate-700/50 p-8"
+                        className="bg-slate-800/50 rounded-2xl border border-slate-700/50 p-8"
                     >
                         <h2 className="text-2xl font-bold text-white mb-6">Contact Support</h2>
 
@@ -171,40 +153,15 @@ const DeepLoopSupport = () => {
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full md:w-auto bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 disabled:opacity-50"
+                                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 disabled:opacity-50"
                             >
                                 {isSubmitting ? 'Sending Request...' : 'Send Request'}
                                 {!isSubmitting && <Send className="ml-2 h-4 w-4" />}
                             </Button>
                         </form>
                     </motion.div>
-
-                    {/* Additional Resources Sidebar */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="space-y-6"
-                    >
-                        <h3 className="text-xl font-bold text-white mb-4">Quick Resources</h3>
-                        {supportResources.map((resource, index) => {
-                            const IconItem = resource.icon;
-                            return (
-                                <div key={index} className="bg-slate-800/30 border border-slate-700/30 p-6 rounded-xl hover:bg-slate-800/50 transition-colors cursor-pointer group">
-                                    <div className="flex items-start space-x-4">
-                                        <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors">
-                                            <IconItem className="h-5 w-5 text-blue-400" />
-                                        </div>
-                                        <div>
-                                            <h4 className="text-white font-semibold mb-1">{resource.title}</h4>
-                                            <p className="text-sm text-gray-400">{resource.description}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </motion.div>
                 </div>
+
             </div>
         </div>
     );
