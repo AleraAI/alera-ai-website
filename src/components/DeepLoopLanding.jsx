@@ -50,7 +50,7 @@ const DeepLoopLanding = () => {
                         className="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-8"
                     >
                         <BrainCircuit className="h-4 w-4 text-blue-400" />
-                        <span className="text-blue-300 text-sm font-medium">Available on iPad</span>
+                        <span className="text-blue-300 text-sm font-medium">Available on iPhone</span>
                     </motion.div>
 
                     <motion.h1
@@ -211,15 +211,15 @@ const DeepLoopLanding = () => {
                     <div className="space-y-2">
                         <FAQItem
                             question="Is DeepLoop free to use?"
-                            answer="Yes, DeepLoop is currently free and designed specifically for iPad. We believe in providing premium learning experiences without barriers."
+                            answer="Yes, DeepLoop is currently free. We believe in providing premium learning experiences without barriers."
                         />
                         <FAQItem
                             question="Can I learn anything with DeepLoop?"
                             answer="Absolutely. Whether you're a software engineer learning a new framework, a professional preparing for a certification, or a hobbyist diving into astrophysics, DeepLoop builds a bespoke curriculum for you."
                         />
                         <FAQItem
-                            question="Is it available for iPhone or Mac?"
-                            answer="Currently, DeepLoop is optimized and designed specifically for iPad to ensure the best interactive, distraction-free learning experience. macOS is not officially verified yet."
+                            question="What devices can I use DeepLoop on?"
+                            answer="DeepLoop is primarily designed and optimized for iPhone to ensure the best interactive, distraction-free learning experience, and it can also be used on iPad. macOS is not officially verified yet."
                         />
                     </div>
                 </div>
