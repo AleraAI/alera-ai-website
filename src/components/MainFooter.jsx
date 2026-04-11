@@ -41,8 +41,9 @@ const MainFooter = () => {
                     <ul className="space-y-3 text-sm">
                         <li><Link to="/" onClick={(e) => handleSectionScroll(e, 'hero')} className="hover:text-white transition-colors">Home</Link></li>
                         <li><Link to="/" onClick={(e) => handleSectionScroll(e, 'services')} className="hover:text-white transition-colors">Services</Link></li>
-                        <li><Link to="/courses" className="hover:text-white transition-colors">Courses</Link></li>
-                        <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                        <li><Link to="/#courses" className="hover:text-white transition-colors">Courses</Link></li>
+                        <li><Link to="/products/deeploop" className="hover:text-white transition-colors">DeepLoop App</Link></li>
+                        <li><Link to="/#blog" className="hover:text-white transition-colors">Blog</Link></li>
                         <li><Link to="/" onClick={(e) => handleSectionScroll(e, 'about')} className="hover:text-white transition-colors">About Us</Link></li>
                     </ul>
                 </div>

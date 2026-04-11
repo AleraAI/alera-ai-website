@@ -17,7 +17,9 @@ import DeepLoopPrivacy from './components/DeepLoopPrivacy.jsx';
 import DeepLoopTerms from './components/DeepLoopTerms.jsx';
 import DeepLoopSupport from './components/DeepLoopSupport.jsx';
 import DeepLoopDataDeletion from './components/DeepLoopDataDeletion.jsx';
+import DeepLoopLanding from './components/DeepLoopLanding.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
+
 
 function Home() {
   return (
@@ -57,9 +59,11 @@ function App() {
             <Route path="/products/deeploop/terms" element={<DeepLoopTerms />} />
             <Route path="/products/deeploop/support" element={<DeepLoopSupport />} />
             <Route path="/products/deeploop/data-deletion" element={<DeepLoopDataDeletion />} />
+            <Route path="/products/deeploop" element={<DeepLoopLanding />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
+
 
 
         <MainFooter />

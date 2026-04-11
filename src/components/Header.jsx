@@ -104,6 +104,9 @@ const Header = () => {
               <button onClick={() => handleNavClick('services')} className="text-gray-300 hover:text-blue-400 transition-colors text-left">
                 Services
               </button>
+              <Link to="/products/deeploop" onClick={() => setIsMenuOpen(false)} className="text-blue-400 hover:text-blue-300 transition-colors text-left">
+                DeepLoop App
+              </Link>
               <button onClick={() => handleNavClick('courses')} className="text-gray-300 hover:text-blue-400 transition-colors text-left">
                 Courses
               </button>
